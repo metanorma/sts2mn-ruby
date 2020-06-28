@@ -1,0 +1,4 @@
+module Sts2mn
+  STS2MN_JAR_VERSION = '1.0'
+  VERSION = "#{STS2MN_JAR_VERSION}.0"
+end
