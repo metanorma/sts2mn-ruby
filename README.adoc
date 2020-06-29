@@ -11,7 +11,7 @@ image:https://img.shields.io/github/commits-since/metanorma/sts2mn-ruby/latest.s
 == Purpose
 
 The sts2mn Ruby gem is a wrapper around the Java https://github.com/metanorma/sts2mn[sts2mn]
-which converts Metanorma XML files into native PDFs.
+which converts NISO STS and ISOSTS into Metanorma XML and AsciiDoc files.
 
 This gem is used to provide sts2mn.jar with mirrored version numbers, to allow
 Ruby code to easily refer to the desired sts2mn version as dependencies.
@@ -30,7 +30,17 @@ Or include it in your gemspec.
 [source,ruby]
 ----
 require 'sts2mn'
-Sts2mn.convert(sample_xml_path, output_pdf_path)
+Sts2mn.convert(input: 'test/sts.xml')
+# => generates 'test/sts.adoc', in Metanorma AsciiDoc
+
+Sts2mn.convert(input: 'test/sts.xml', output: 'another/path/mn.xml', format: 'xml')
+# => generates 'another/path/mn.xml' in Metanorma XML
+
+Sts2mn.convert(input: 'test/sts.xml', output: 'another/path/mn.adoc', format: 'adoc')
+# => generates 'another/path/mn.adoc' in Metanorma AsciiDoc
+
+Sts2mn.split_bibdata('test/sts.xml')
+# => generates 'test/sts.rxl' (Relaton XML) and 'test/mn.adoc' (Metanorma AsciiDoc)
 ----
 
 == Updating the gem
