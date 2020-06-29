@@ -16,16 +16,40 @@ module Sts2mn
     message.strip
   end
 
-  def self.convert(xml_path_in, xml_path_out)
-    return if xml_path_in.nil? || xml_path_out.nil?
+  def self.split_bibdata(input_path)
+    return if input_path.nil?
 
-    puts STS2MN_JAR_PATH
     cmd = ['java', '-Xss5m', '-Xmx1024m', '-jar', STS2MN_JAR_PATH,
-           '--xml-file-in', xml_path_in,
-           '--xml-file-out', xml_path_out
-          ].join(' ')
+           '--split-bibdata', input_path].join(' ')
+    # puts cmd
+    _, error_str, status = Open3.capture3(cmd)
 
-    puts cmd
+    unless status.success?
+      warn error_str
+      raise error_str
+    end
+  end
+
+  def self.convert(input:, output: nil, format: nil)
+    return if input.nil?
+
+    cmd = ['java', '-Xss5m', '-Xmx1024m', '-jar', STS2MN_JAR_PATH]
+
+    case format.to_s
+    when 'xml', 'adoc'
+      cmd << ['--format', format.to_s]
+    else
+      raise 'Unknown format option provided to Sts2mn.convert'
+    end unless format.nil?
+
+    unless output.nil?
+      cmd << ['--output', output.to_s]
+    end
+
+    cmd << [input.to_s]
+
+    cmd = cmd.join(' ')
+    # puts cmd
     _, error_str, status = Open3.capture3(cmd)
 
     unless status.success?
