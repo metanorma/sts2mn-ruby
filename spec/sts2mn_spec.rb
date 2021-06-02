@@ -34,12 +34,6 @@ RSpec.describe Sts2mn do
       end
 
       expect(File.exist?(mn_dest)).to be true
-      case format
-      when 'xml'
-      when 'adoc'
-        expect(File.exist?(File.join(dir, 'body', 'body-en.adoc'))).to be true
-      end
-
     end
   end
 
