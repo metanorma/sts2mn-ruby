@@ -1,9 +1,7 @@
 = sts2mn Ruby gem
 
 image:https://img.shields.io/gem/v/metanorma.svg["Gem Version", link="https://rubygems.org/gems/metanorma"]
-image:https://github.com/metanorma/sts2mn-ruby/workflows/ubuntu/badge.svg["Ubuntu Build Status", link="https://github.com/metanorma/sts2mn-ruby/actions?query=workflow%3Aubuntu"]
-image:https://github.com/metanorma/sts2mn-ruby/workflows/macos/badge.svg["OSX Build Status", link="https://github.com/metanorma/sts2mn-ruby/actions?query=workflow%3Amacos"]
-image:https://github.com/metanorma/sts2mn-ruby/workflows/windows/badge.svg["Windows Build Status", link="https://github.com/metanorma/sts2mn-ruby/actions?query=workflow%3Awindows"]
+image:https://github.com/metanorma/sts2mn-ruby/workflows/rake/badge.svg["Build Status", link="https://github.com/metanorma/sts2mn-ruby/actions?query=workflow%3Arake"]
 image:https://codeclimate.com/github/metanorma/sts2mn-ruby/badges/gpa.svg["Code Climate", link="https://codeclimate.com/github/metanorma/sts2mn-ruby"]
 image:https://img.shields.io/github/issues-pr-raw/metanorma/sts2mn-ruby.svg["Pull Requests", link="https://github.com/metanorma/sts2mn-ruby/pulls"]
 image:https://img.shields.io/github/commits-since/metanorma/sts2mn-ruby/latest.svg["Commits since latest",link="https://github.com/metanorma/sts2mn-ruby/releases"]
