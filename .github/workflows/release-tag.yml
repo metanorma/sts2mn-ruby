@@ -5,45 +5,52 @@ on:
     types: [ metanorma/sts2mn ]
 
 jobs:
-  tag_repo:
-    runs-on: ubuntu-18.04
+  prepare:
+    uses: metanorma/ci/.github/workflows/prepare-rake.yml@main
+
+  tag-repo:
+    runs-on: ubuntu-latest
+    needs: prepare
     if: startsWith(github.event.client_payload.ref, 'refs/tags/v')
     steps:
-      - uses: actions/checkout@v1
-      - name: Add writable remote
-        run: |
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+
+      - run: |
           git config --global user.name "metanorma-ci"
           git config --global user.email "metanorma-ci@users.noreply.github.com"
-          git remote add github "https://metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
-          git pull github ${GITHUB_REF} --ff-only
+
       - name: Parse sts2mn version
         env:
           sts2mn_TAG: ${{ github.event.client_payload.ref }}
-        run: |
-          echo sts2mn_VERSION=${sts2mn_TAG#*/v} >> ${GITHUB_ENV}
-      - name: Use Ruby
-        uses: actions/setup-ruby@v1
+        run: echo sts2mn_VERSION=${sts2mn_TAG#*/v} >> ${GITHUB_ENV}
+
+      - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
-          architecture: 'x64'
-      - name: Update gems
-        run: |
+          ruby-version: ${{ needs.prepare.outputs.default-ruby-version }}
+          bundler-cache: true
+
+      - run: rm -f bin/sts2mn.jar
+
+      - run: bundle exec rake
+
+      - run: |
           gem install gem-release
-          gem install bundler
-          bundle install --jobs 4 --retry 3
-      - name: Update version
-        run: |
           gem bump --version ${sts2mn_VERSION} --no-commit
-      - name: Update sts2mn.jar
-        run: |
-          rm -f bin/sts2mn.jar
-          rake bin/sts2mn.jar
-      - name: Run specs
-        run: |
-          bundle exec rake
+
       - name: Push commit and tag
         run: |
           git add -u bin/sts2mn.jar lib/sts2mn/version.rb
           git commit -m "Bump version to ${sts2mn_VERSION}"
           git tag v${sts2mn_VERSION}
           git push github HEAD:${GITHUB_REF} --tags
+
+      - if: failure()
+        uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+        with:
+          assignees: CAMOBAP
+          update_existing: true
+          search_existing: all
